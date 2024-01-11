@@ -19,4 +19,7 @@ public interface RatingService {
     @GetMapping("/ratings/user/{userId}")
     List<Rating> getUserRating(@PathVariable String userId);
 
+    @GetMapping("/ratings")
+    List<Rating> getAllRating();
+
 }
