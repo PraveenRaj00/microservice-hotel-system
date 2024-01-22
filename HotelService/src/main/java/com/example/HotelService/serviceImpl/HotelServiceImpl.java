@@ -5,6 +5,7 @@ import com.example.HotelService.exceptions.ResourceNotFoundException;
 import com.example.HotelService.repository.HotelRepository;
 import com.example.HotelService.service.HotelService;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -25,11 +26,13 @@ public class HotelServiceImpl implements HotelService {
     }
 
     @Override
+    @Cacheable(cacheNames = "all-hotel")
     public List<Hotel> getAllHotels() {
         return repository.findAll();
     }
 
     @Override
+    @Cacheable(cacheNames = "by-hotelId")
     public Hotel getOneHotel(String hotelId) {
         return repository.findById(hotelId).orElseThrow(() -> new
                 ResourceNotFoundException("Resource not available on server !!"+hotelId));

@@ -10,7 +10,10 @@ import com.example.User.Service.repository.UserRepository;
 import com.example.User.Service.service.UserService;
 import jakarta.ws.rs.POST;
 import org.apache.catalina.User;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
@@ -25,6 +28,8 @@ import java.util.stream.Collectors;
 
 @Service
 public class UserServiceImpl implements UserService {
+
+    Logger logger= LoggerFactory.getLogger(UserServiceImpl.class);
 
     @Autowired
     UserRepository repository;
@@ -45,6 +50,7 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(cacheNames = "all-user")
     public List<UserTable> getAllUser() {
         List<UserTable> user= repository.findAll();
 
@@ -53,19 +59,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
+    @Cacheable(cacheNames = "one-user")
     public UserTable getOneUser(String userId) {
         UserTable user= repository.findById(userId).orElseThrow(() ->
                 new ResourceNotFoundException("User not available on serve !!"+userId));
-        List<Rating> rating= ratingService.getUserRating(user.getUserId());
 
-        List<Rating> ratingList= rating.stream().map(ratings -> {
-        Hotel hotel =hotelService.getHotel(ratings.getHotelId());
-        ratings.setHotel(hotel);
-        return ratings;
-        }).toList();
-        //user.setRatings(ratingService.getUserRating(user.getUserId()));
-
-        user.setRatings(ratingList);
+        logger.info("Requested for User : "+userId+"\n");
+        logger.info("---------------------------\n");
+        logger.info("Response from server : "+user.toString()+"\n");
         return user;
 
     }

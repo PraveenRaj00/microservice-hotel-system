@@ -5,6 +5,7 @@ import com.example.RatingService.repository.RatingsRepository;
 import com.example.RatingService.service.RatingService;
 import com.example.RatingService.exceptions.ResourceNotFoundException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -28,16 +29,19 @@ public class RatingServiceImpl implements RatingService {
     }
 
     @Override
+    @Cacheable(cacheNames = "all-ratings")
     public List<Rating> getAllRatings() {
         return repository.findAll();
     }
 
     @Override
+    @Cacheable(cacheNames = "one-user")
     public List<Rating> getOneByUserId(String userId) {
         return repository.findByUserId(userId);
     }
 
     @Override
+    @Cacheable(cacheNames = "rating-by-hotelName")
     public List<Rating> getOneByHotelId(String hotelId) {
         return repository.findByHotelId(hotelId);
     }
