@@ -58,12 +58,15 @@ public class UserServiceImpl implements UserService {
         return user;
     }
 
+    int retryCount=0;
     @Override
-    @Cacheable(cacheNames = "one-user")
+    //@Cacheable(cacheNames = "one-user")
     public UserTable getOneUser(String userId) {
         UserTable user= repository.findById(userId).orElseThrow(() ->
                 new ResourceNotFoundException("User not available on serve !!"+userId));
 
+        logger.info("Retry count : "+retryCount);
+        retryCount++;
         logger.info("Requested for User : "+userId+"\n");
         logger.info("---------------------------\n");
         logger.info("Response from server : "+user.toString()+"\n");

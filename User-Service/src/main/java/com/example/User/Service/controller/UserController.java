@@ -7,6 +7,7 @@ import com.example.User.Service.feignConfig.HotelService;
 import com.example.User.Service.feignConfig.RatingService;
 import com.example.User.Service.service.UserService;
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker;
+import io.github.resilience4j.retry.annotation.Retry;
 import org.hibernate.dialect.function.array.ArraySliceUnnestFunction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -46,8 +47,10 @@ public class UserController {
     }
 
 
+
     @GetMapping("/{userId}")
-    @CircuitBreaker(name = "user-service",fallbackMethod = "handleRatingDowntime")
+    //@CircuitBreaker(name = "user-service",fallbackMethod = "handleRatingDowntime")
+    @Retry(name = "userServiceRetry", fallbackMethod = "handleRatingDowntime")
     public ResponseEntity<UserTable> getOneUser(@PathVariable String userId){
 
         UserTable user= service.getOneUser(userId);
