@@ -11,6 +11,8 @@ import org.springframework.cloud.openfeign.EnableFeignClients;
 @EnableCaching
 public class UserServiceApplication {
 
+	//checking jenkins Build
+
 	public static void main(String[] args) {
 		SpringApplication.run(UserServiceApplication.class, args);
 	}
