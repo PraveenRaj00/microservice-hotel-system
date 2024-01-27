@@ -9,7 +9,7 @@ pipeline {
             }
         }
 
-        stage('Build') {
+        stage('Build and Test') {
             steps {
                 script {
                     def mvnHome = tool 'Maven'
@@ -40,6 +40,32 @@ pipeline {
                             }
                         }
                     )
+
+                    // Run tests for selected microservices
+                    // parallel (
+                    //     "Test-HotelService": {
+                    //         if ('HotelService' in selectedServices) {
+                    //             dir('HotelService') {
+                    //                 if (isUnix()) {
+                    //                     sh "'${mvnHome}/bin/mvn' test"
+                    //                 } else {
+                    //                     bat(/"${mvnHome}\bin\mvn" test/)
+                    //                 }
+                    //             }
+                    //         }
+                    //     },
+                    //     "Test-RatingService": {
+                    //         if ('RatingService' in selectedServices) {
+                    //             dir('RatingService') {
+                    //                 if (isUnix()) {
+                    //                     sh "'${mvnHome}/bin/mvn' test"
+                    //                 } else {
+                    //                     bat(/"${mvnHome}\bin\mvn" test/)
+                    //                 }
+                    //             }
+                    //         }
+                    //     }
+                    // )
                 }
             }
         }
@@ -47,13 +73,14 @@ pipeline {
 
     post {
         success {
-            echo 'Microservices build successful!'
+            echo 'Microservices build and tests successful!'
         }
         failure {
-            echo 'Microservices build failed.'
+            echo 'Microservices build and tests failed.'
         }
     }
 }
+
 //Script for Test
 pipeline {
 //     agent any
