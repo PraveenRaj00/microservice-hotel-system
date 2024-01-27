@@ -34,7 +34,7 @@ pipeline {
     }
 
     post {
-        alway{
+        always{
             junit '**/target/surefire-reports/*.xml'
             cleanWs()
         }
