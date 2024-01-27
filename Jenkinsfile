@@ -31,7 +31,26 @@ pipeline {
                 }
             }
         }
+        
     }
+    stage('Test') {
+            steps {
+                script {
+                    def mvnHome = tool 'Maven'
+
+                    // Run Maven test phase for User-Service
+                    dir('User-Service') {
+                        if (isUnix()) {
+                            sh "'${mvnHome}/bin/mvn' test"
+                        } else {
+                            bat(/"${mvnHome}\bin\mvn" test/)
+                        }
+                    }
+                }
+            }
+        }
+    }
+
 
     post {
         always{
