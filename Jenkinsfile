@@ -34,6 +34,10 @@ pipeline {
     }
 
     post {
+        alway{
+            junit '**/target/surefire-reports/*.xml'
+            cleanWs()
+        }
         success {
             echo 'Microservices build successful!'
         }
