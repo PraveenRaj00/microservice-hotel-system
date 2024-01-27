@@ -4,19 +4,31 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                git 'https://github.com/PraveenRaj00/microservice-hotel-system.git'
+                checkout([$class: 'GitSCM', branches: [[name: '*/master']], doGenerateSubmoduleConfigurations: false, extensions: [], submoduleCfg: [], userRemoteConfigs: [[url: 'https://github.com/PraveenRaj00/microservice-hotel-system.git']]])
             }
         }
 
         stage('Build') {
             steps {
-                sh 'mvn clean install -f Config-Server/pom.xml'
-                sh 'mvn clean install -f Gateway-Service/pom.xml'
-                sh 'mvn clean install -f HotelService/pom.xml'
-                sh 'mvn clean install -f RatingService/pom.xml'
-                sh 'mvn clean install -f Service-Registry/pom.xml'
-                sh 'mvn clean install -f User-Service/pom.xml'
-                // Add more Maven commands for each microservice
+                script {
+                    def mvnHome = tool 'Maven'
+
+                    // List of all microservices
+                    def allServices = ['HotelService', 'RatingService', 'Service-Registry', 'User-Service', 'Gateway-Service', 'Config-Server']
+
+                    // Build all microservices
+                    parallel "Build-All-Services": {
+                        for (service in allServices) {
+                            dir(service) {
+                                if (isUnix()) {
+                                    sh "'${mvnHome}/bin/mvn' clean install"
+                                } else {
+                                    bat(/"${mvnHome}\bin\mvn" clean install/)
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
     }
