@@ -10,8 +10,8 @@ pipeline {
 
         stage('Build') {
             steps {
-                sh 'mvn clean install -f Config-Server/pom.xml'
-                sh 'mvn clean install -f Gateway-Service/pom.xml'
+                sh 'mvn clean install -f pom.xml'
+                sh 'mvn clean install -f pom.xml'
                 sh 'mvn clean install -f HotelService/pom.xml'
                 sh 'mvn clean install -f RatingService/pom.xml'
                 sh 'mvn clean install -f Service-Registry/pom.xml'
